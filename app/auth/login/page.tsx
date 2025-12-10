@@ -56,6 +56,7 @@ export default function LoginPage() {
         } else {
           setServerError(error.message);
         }
+        setIsLoading(false);
         return;
       }
 
@@ -63,7 +64,6 @@ export default function LoginPage() {
       router.refresh();
     } catch {
       setServerError("An unexpected error occurred. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
