@@ -4,7 +4,6 @@ import Link from "next/link";
 interface NavigationLinkProps {
   href: string;
   children: React.ReactNode;
-  isScrolled: boolean;
   hasDropdown?: boolean;
   className?: string;
 }
@@ -12,7 +11,6 @@ interface NavigationLinkProps {
 export default function NavigationLink({
   href,
   children,
-  isScrolled,
   hasDropdown = false,
   className = "",
 }: NavigationLinkProps) {
@@ -20,10 +18,7 @@ export default function NavigationLink({
     <Link
       href={href}
       className={cn(
-        "font-bold transition-colors inline-flex items-center",
-        isScrolled
-          ? "text-slate-800 hover:text-primary"
-          : "text-white hover:text-secondary",
+        "font-bold transition-colors inline-flex items-center text-slate-800 hover:text-primary",
         className
       )}
     >

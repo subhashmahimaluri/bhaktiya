@@ -1,5 +1,6 @@
 "use client";
 
+import { AUTH_ROUTES } from "@/lib/constants/authConfig";
 import { navigationLinks } from "@/lib/constants/navigationData";
 import { cn } from "@/lib/utils/classNames";
 import Image from "next/image";
@@ -28,24 +29,57 @@ export default function Header() {
           "z-50 w-full transition-all duration-300 px-4 sm:px-6 md:px-8 lg:px-8",
           isScrolled
             ? "fixed top-0 left-0 right-0 bg-white shadow-md animate-slideInDown"
-            : "absolute top-0 left-0 right-0 bg-transparent backdrop-blur-sm"
+            : "top-0 left-0 right-0 bg-white shadow-md backdrop-blur-sm"
         )}
       >
+        {/* Topbar - hides on scroll */}
+        <div
+          className={cn(
+            "bg-primary text-white transition-all duration-300 overflow-hidden -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-8",
+            isScrolled ? "max-h-0 opacity-0" : "max-h-12 opacity-100"
+          )}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-2 py-2 flex items-center justify-between text-sm">
+            {/* Language Selector */}
+            <div className="flex items-center space-x-2">
+              <button className="hover:underline transition-colors font-bold">
+                ಕನ್ನಡ
+              </button>
+              <span className="opacity-60">|</span>
+              <button className="hover:underline transition-colors font-bold">
+                English
+              </button>
+            </div>
+
+            {/* Auth Links */}
+            <div className="flex items-center space-x-2">
+              <Link
+                href={AUTH_ROUTES.LOGIN}
+                className="hover:underline transition-colors font-bold"
+              >
+                Login
+              </Link>
+              <span className="opacity-60">|</span>
+              <Link
+                href={AUTH_ROUTES.SIGNUP}
+                className="hover:underline transition-colors font-bold"
+              >
+                Register
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {!isScrolled && (
           <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none"></div>
         )}
-        <div
-          className={cn(
-            "max-w-7xl mx-auto relative z-10",
-            isScrolled ? "py-2.5" : "py-4"
-          )}
-        >
+        <div className={cn("max-w-7xl mx-auto relative z-10 py-2.5")}>
           <nav className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src={isScrolled ? "/logo.png" : "/logo-white.png"}
-                width="214"
-                height="50"
+                src={"/logo.png"}
+                width="184"
+                height="40"
                 alt="PlanBPass"
                 priority
                 quality={90}
@@ -58,7 +92,6 @@ export default function Header() {
                 <NavigationLink
                   key={link.label}
                   href={link.href}
-                  isScrolled={isScrolled}
                   hasDropdown={link.hasDropdown}
                 >
                   {link.label}
@@ -67,7 +100,7 @@ export default function Header() {
             </div>
 
             {/* Auth Buttons */}
-            <div className="hidden lg:flex items-center space-x-4">
+            {/* <div className="hidden lg:flex items-center space-x-4">
               <Link
                 href="#"
                 className={cn(
@@ -90,7 +123,7 @@ export default function Header() {
               >
                 Get Started
               </Link>
-            </div>
+            </div> */}
 
             {/* Mobile Menu Button */}
             <button

@@ -1,6 +1,5 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
 import StickyWaitlistButton from "@/components/StickyWaitlistButton";
 import AppStoreButton from "@/components/ui/AppStoreButton";
 import DestinationCard from "@/components/ui/DestinationCard";
@@ -18,8 +17,6 @@ export default function Home() {
       <StickyWaitlistButton />
 
       <main className="w-full">
-        <Hero />
-
         {/* How It Works Section */}
         <section className="py-5 lg:pt-5 pb-10 lg:pb-15 bg-tinted-white dark:bg-slate-900/50 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">

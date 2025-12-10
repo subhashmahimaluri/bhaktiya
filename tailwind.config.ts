@@ -23,7 +23,7 @@ const config: Config = {
         "pbp-purple-1": "#7b3ff9",
         "pbp-purple-2": "#b266ff",
         "pbp-soft": "#f6f5fb",
-        primary: "#7F00FF",
+        primary: "#8F8800",
         secondary: "#fde047",
         "background-light": "#F8F9FA",
         "background-dark": "#f0b8b8ff",
