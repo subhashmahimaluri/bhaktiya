@@ -25,7 +25,7 @@ const config: Config = {
         "pbp-soft": "#f6f5fb",
         primary: "#8F8800",
         secondary: "#fde047",
-        "background-light": "#F8F9FA",
+        "background-light": "#f5f5f5",
         "background-dark": "#f0b8b8ff",
         "tinted-white": "#FCFCFE",
         "anti-flash-white": "#FCFCFE",

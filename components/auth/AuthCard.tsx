@@ -12,7 +12,7 @@ interface AuthCardProps {
  */
 export function AuthCard({ children, title, subtitle }: AuthCardProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div className="min-h-screen flex flex-col">
       {/* Site Header */}
       <Header />
 
