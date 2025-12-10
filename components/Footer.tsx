@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -11,36 +10,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* About Section */}
           <div className="lg:col-span-1">
-            <Link href="/" className="inline-block">
-              <Image
-                src={"/logo-white.png"}
-                width="180"
-                height="42"
-                alt="PlanBPass"
-                priority
-                quality={90}
-              />
-            </Link>
             <p className="mt-4 text-slate-300 text-base leading-relaxed">
               Your AI-powered path to global opportunities. We help
               professionals navigate their migration journey with confidence.
             </p>
-            {/* Newsletter Signup */}
-            <div className="mt-8">
-              <h4 className="text-white font-semibold text-sm mb-3">
-                Stay Updated
-              </h4>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-pbp-purple-1 focus:border-transparent"
-                />
-                <button className="px-4 py-2 bg-gradient-to-r from-pbp-purple-1 to-pbp-purple-2 text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium">
-                  Subscribe
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Quick Links */}

@@ -3,29 +3,60 @@
 import { AuthButton } from "@/components/auth/AuthButton";
 import { AuthCard } from "@/components/auth/AuthCard";
 import { AuthInput } from "@/components/auth/AuthInput";
-import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { AUTH_ROUTES } from "@/lib/constants/authConfig";
 import { getSupabase } from "@/lib/supabaseClient";
-import { FormErrors, SignupFormData } from "@/lib/types/auth";
-import { hasErrors, validateSignupForm } from "@/lib/utils/validation";
+import { FormErrors, ResetPasswordFormData } from "@/lib/types/auth";
+import { hasErrors, validateResetPasswordForm } from "@/lib/utils/validation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function SignupPage() {
+export default function ResetPasswordPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [formData, setFormData] = useState<SignupFormData>({
-    name: "",
-    email: "",
+  const [isValidSession, setIsValidSession] = useState<boolean | null>(null);
+  const [formData, setFormData] = useState<ResetPasswordFormData>({
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (field: keyof SignupFormData, value: string) => {
+  // Check if user has a valid recovery session
+  useEffect(() => {
+    const checkSession = async () => {
+      const supabase = getSupabase();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      // User should have a session from the recovery link
+      if (session) {
+        setIsValidSession(true);
+      } else {
+        setIsValidSession(false);
+      }
+    };
+
+    checkSession();
+
+    // Listen for auth state changes (when user clicks recovery link)
+    const supabase = getSupabase();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setIsValidSession(true);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleChange = (field: keyof ResetPasswordFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -36,7 +67,7 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationErrors = validateSignupForm(formData);
+    const validationErrors = validateResetPasswordForm(formData);
     if (hasErrors(validationErrors)) {
       setErrors(validationErrors);
       return;
@@ -48,15 +79,8 @@ export default function SignupPage() {
     try {
       const supabase = getSupabase();
 
-      const { error } = await supabase.auth.signUp({
-        email: formData.email,
+      const { error } = await supabase.auth.updateUser({
         password: formData.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}${AUTH_ROUTES.CALLBACK}`,
-          data: {
-            name: formData.name,
-          },
-        },
       });
 
       if (error) {
@@ -64,10 +88,12 @@ export default function SignupPage() {
         return;
       }
 
-      // Show success message for email verification
-      setSuccessMessage(
-        "Account created! Please check your email to verify your account."
-      );
+      setSuccessMessage("Password updated successfully!");
+
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        router.push(AUTH_ROUTES.LOGIN);
+      }, 2000);
     } catch {
       setServerError("An unexpected error occurred. Please try again.");
     } finally {
@@ -75,12 +101,79 @@ export default function SignupPage() {
     }
   };
 
+  // Loading state while checking session
+  if (isValidSession === null) {
+    return (
+      <AuthCard title="Reset Password" subtitle="Please wait...">
+        <div className="flex justify-center py-8">
+          <svg
+            className="animate-spin h-8 w-8 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+        </div>
+      </AuthCard>
+    );
+  }
+
+  // Invalid session - show error
+  if (!isValidSession) {
+    return (
+      <AuthCard
+        title="Invalid or Expired Link"
+        subtitle="This password reset link is no longer valid"
+      >
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-red-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <p className="text-slate-600">
+            The password reset link has expired or is invalid. Please request a
+            new one.
+          </p>
+          <Link
+            href={AUTH_ROUTES.FORGOT_PASSWORD}
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
+          >
+            Request New Link
+          </Link>
+        </div>
+      </AuthCard>
+    );
+  }
+
   // Show success state
   if (successMessage) {
     return (
       <AuthCard
-        title="Check your email"
-        subtitle="We've sent you a verification link"
+        title="Password Updated"
+        subtitle="Your password has been reset successfully"
       >
         <div className="text-center space-y-4">
           <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
@@ -94,41 +187,19 @@ export default function SignupPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                d="M5 13l4 4L19 7"
               />
             </svg>
           </div>
           <p className="text-slate-600">{successMessage}</p>
-          <Link
-            href={AUTH_ROUTES.LOGIN}
-            className="inline-block text-primary hover:text-primary/80 font-semibold transition-colors"
-          >
-            Go to Login
-          </Link>
+          <p className="text-sm text-slate-500">Redirecting to login...</p>
         </div>
       </AuthCard>
     );
   }
 
   return (
-    <AuthCard title="Create your account" subtitle="Join Bhaktiya today">
-      {/* Google OAuth Button */}
-      <div className="mb-6">
-        <GoogleAuthButton />
-      </div>
-
-      {/* Divider */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-3 bg-white text-slate-500">
-            or continue with email
-          </span>
-        </div>
-      </div>
-
+    <AuthCard title="Set New Password" subtitle="Enter your new password below">
       <form onSubmit={handleSubmit} className="space-y-4">
         {serverError && (
           <div
@@ -140,65 +211,9 @@ export default function SignupPage() {
           </div>
         )}
 
-        {/* Name */}
-        <AuthInput
-          label="Full Name"
-          type="text"
-          placeholder="John Doe"
-          value={formData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-          error={errors.name}
-          autoComplete="name"
-          aria-required="true"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          }
-        />
-
-        {/* Email */}
-        <AuthInput
-          label="Email Address"
-          type="email"
-          placeholder="you@example.com"
-          value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-          error={errors.email}
-          autoComplete="email"
-          aria-required="true"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-          }
-        />
-
         {/* Password */}
         <AuthInput
-          label="Password"
+          label="New Password"
           type="password"
           placeholder="••••••••"
           value={formData.password}
@@ -230,7 +245,7 @@ export default function SignupPage() {
 
         {/* Confirm Password */}
         <AuthInput
-          label="Confirm Password"
+          label="Confirm New Password"
           type="password"
           placeholder="••••••••"
           value={formData.confirmPassword}
@@ -258,22 +273,9 @@ export default function SignupPage() {
 
         {/* Submit Button */}
         <AuthButton type="submit" isLoading={isLoading}>
-          Create Account
+          Update Password
         </AuthButton>
       </form>
-
-      {/* Login Link */}
-      <div className="mt-6 text-center">
-        <p className="text-sm text-slate-600">
-          Already have an account?{" "}
-          <Link
-            href={AUTH_ROUTES.LOGIN}
-            className="font-semibold text-primary hover:text-primary/80 transition-colors"
-          >
-            Sign in
-          </Link>
-        </p>
-      </div>
     </AuthCard>
   );
 }

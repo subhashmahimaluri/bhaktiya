@@ -1,6 +1,6 @@
 /**
  * Auth Callback Route Handler
- * Handles OAuth callbacks and email confirmations
+ * Handles OAuth callbacks, email confirmations, and password recovery
  *
  * NOTE: This route creates user profiles directly using serverSupabase
  * to avoid issues with nested fetch calls and missing cookies.
@@ -16,6 +16,9 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const origin = requestUrl.origin;
+
+  // Check for password recovery type
+  const type = requestUrl.searchParams.get("type");
 
   if (code) {
     const cookieStore = await cookies();
@@ -53,6 +56,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // If this is a password recovery, redirect to reset password page
+    if (type === "recovery") {
+      return NextResponse.redirect(`${origin}${AUTH_ROUTES.RESET_PASSWORD}`);
+    }
+
     // Get the authenticated user
     const {
       data: { user },
@@ -70,7 +78,7 @@ export async function GET(request: NextRequest) {
     // Check if user profile exists in users table using service client
     const { data: existingUser, error: lookupError } = await serverSupabase
       .from("users")
-      .select("id, user_type")
+      .select("id, role")
       .eq("auth_uid", user.id)
       .maybeSingle();
 
@@ -86,15 +94,14 @@ export async function GET(request: NextRequest) {
         user.email?.split("@")[0] ||
         "User";
 
-      // For OAuth users without explicit user_type, default to seeker
-      // They can update this later or we show a selection modal
-      const userType = user.user_metadata?.user_type || "seeker";
+      // All new users get 'basic' role by default
+      const userRole = "basic";
 
       console.log("Creating user profile:", {
         auth_uid: user.id,
         email: user.email,
         name: userName,
-        user_type: userType,
+        role: userRole,
       });
 
       const { data: newUser, error: insertError } = await serverSupabase
@@ -103,23 +110,24 @@ export async function GET(request: NextRequest) {
           auth_uid: user.id,
           email: user.email,
           name: userName,
-          user_type: userType,
+          role: userRole,
+          email_verified: user.email_confirmed_at != null,
         })
         .select("*")
         .single();
 
       if (insertError) {
         console.error("Failed to create user profile:", insertError);
-        // Still redirect to onboarding - they can retry
+        // Still redirect to dashboard - profile may be created by trigger
         return NextResponse.redirect(
-          `${origin}${AUTH_ROUTES.ONBOARDING}?error=profile_create_failed`
+          `${origin}${AUTH_ROUTES.DASHBOARD}?error=profile_create_failed`
         );
       }
 
       console.log("Created user profile:", newUser);
 
-      // New user - redirect to onboarding
-      return NextResponse.redirect(`${origin}${AUTH_ROUTES.ONBOARDING}`);
+      // New user - redirect to dashboard
+      return NextResponse.redirect(`${origin}${AUTH_ROUTES.DASHBOARD}`);
     }
 
     console.log("Existing user found:", existingUser);

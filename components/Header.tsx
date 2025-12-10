@@ -2,16 +2,65 @@
 
 import { AUTH_ROUTES } from "@/lib/constants/authConfig";
 import { navigationLinks } from "@/lib/constants/navigationData";
+import { getSupabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils/classNames";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationLink from "./ui/NavigationLink";
 
 export default function Header() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = getSupabase();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setIsLoggedIn(!!user);
+
+      if (user) {
+        // Check if user is admin
+        const { data: profile } = await supabase
+          .from("users")
+          .select("role")
+          .eq("auth_uid", user.id)
+          .single();
+        setIsAdmin(profile?.role === "admin");
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    checkAuth();
+
+    // Listen for auth changes
+    const supabase = getSupabase();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setIsLoggedIn(!!session?.user);
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("users")
+          .select("role")
+          .eq("auth_uid", session.user.id)
+          .single();
+        setIsAdmin(profile?.role === "admin");
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -53,19 +102,55 @@ export default function Header() {
 
             {/* Auth Links */}
             <div className="flex items-center space-x-2">
-              <Link
-                href={AUTH_ROUTES.LOGIN}
-                className="hover:underline transition-colors font-bold"
-              >
-                Login
-              </Link>
-              <span className="opacity-60">|</span>
-              <Link
-                href={AUTH_ROUTES.SIGNUP}
-                className="hover:underline transition-colors font-bold"
-              >
-                Register
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <button
+                    onClick={async () => {
+                      const supabase = getSupabase();
+                      await supabase.auth.signOut();
+                      router.push(AUTH_ROUTES.HOME);
+                      router.refresh();
+                    }}
+                    className="hover:underline transition-colors font-bold"
+                  >
+                    Logout
+                  </button>
+                  {isAdmin && (
+                    <>
+                      <span className="opacity-60">|</span>
+                      <Link
+                        href={AUTH_ROUTES.ADMIN}
+                        className="hover:underline transition-colors font-bold"
+                      >
+                        Admin
+                      </Link>
+                    </>
+                  )}
+                  <span className="opacity-60">|</span>
+                  <Link
+                    href={AUTH_ROUTES.DASHBOARD}
+                    className="hover:underline transition-colors font-bold"
+                  >
+                    My Profile
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href={AUTH_ROUTES.LOGIN}
+                    className="hover:underline transition-colors font-bold"
+                  >
+                    Login
+                  </Link>
+                  <span className="opacity-60">|</span>
+                  <Link
+                    href={AUTH_ROUTES.SIGNUP}
+                    className="hover:underline transition-colors font-bold"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -242,20 +327,55 @@ export default function Header() {
 
             {/* Menu Footer */}
             <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10 bg-purple-900/50 backdrop-blur-sm space-y-3">
-              <Link
-                href="#"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-center text-white/90 hover:text-white font-semibold py-3 transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="#"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-center bg-secondary hover:bg-secondary/90 text-slate-900 font-bold py-3.5 rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
-              >
-                Get Started
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <button
+                    onClick={async () => {
+                      const supabase = getSupabase();
+                      await supabase.auth.signOut();
+                      setMobileMenuOpen(false);
+                      router.push(AUTH_ROUTES.HOME);
+                      router.refresh();
+                    }}
+                    className="block w-full text-center text-white/90 hover:text-white font-semibold py-3 transition-colors"
+                  >
+                    Logout
+                  </button>
+                  {isAdmin && (
+                    <Link
+                      href={AUTH_ROUTES.ADMIN}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-center text-white/90 hover:text-white font-semibold py-3 transition-colors border border-white/20 rounded-lg"
+                    >
+                      Admin Panel
+                    </Link>
+                  )}
+                  <Link
+                    href={AUTH_ROUTES.DASHBOARD}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-center bg-secondary hover:bg-secondary/90 text-slate-900 font-bold py-3.5 rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+                  >
+                    My Profile
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href={AUTH_ROUTES.LOGIN}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-center text-white/90 hover:text-white font-semibold py-3 transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href={AUTH_ROUTES.SIGNUP}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-center bg-secondary hover:bg-secondary/90 text-slate-900 font-bold py-3.5 rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </>

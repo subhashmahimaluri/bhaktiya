@@ -38,7 +38,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
               "text-slate-800 placeholder:text-slate-400",
               "transition-all duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary",
-              icon && "pl-10",
+              !!icon && "pl-10",
               error
                 ? "border-red-400 focus:ring-red-400/50 focus:border-red-400"
                 : "border-slate-200 hover:border-slate-300",

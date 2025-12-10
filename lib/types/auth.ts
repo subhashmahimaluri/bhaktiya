@@ -1,11 +1,13 @@
 // Authentication Types and Enums
 
 /**
- * User type enum - matches database user_type column
+ * User role enum - matches database user_role column
  */
-export enum UserType {
-  SEEKER = "seeker",
-  HELPER = "helper",
+export enum UserRole {
+  ADMIN = "admin",
+  EDITOR = "editor",
+  PREMIUM = "premium",
+  BASIC = "basic",
 }
 
 /**
@@ -16,24 +18,11 @@ export interface UserProfile {
   auth_uid: string;
   email: string;
   name: string;
-  user_type: UserType;
+  role: UserRole;
+  email_verified: boolean;
+  avatar_url?: string;
   created_at: string;
-}
-
-/**
- * Helper profile from helpers table
- */
-export interface HelperProfile {
-  id: string;
-  user_id: string;
-  skills: string[];
-  languages: string[];
-  price_min: number;
-  price_max: number;
-  country: string;
-  rating?: number;
-  created_at?: string;
-  updated_at?: string;
+  updated_at: string;
 }
 
 /**
@@ -44,7 +33,6 @@ export interface SignupFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  userType: UserType;
 }
 
 /**
@@ -56,14 +44,18 @@ export interface LoginFormData {
 }
 
 /**
- * Helper onboarding form data
+ * Forgot password form data
  */
-export interface HelperOnboardingData {
-  skills: string[];
-  languages: string[];
-  price_min: number;
-  price_max: number;
-  country: string;
+export interface ForgotPasswordFormData {
+  email: string;
+}
+
+/**
+ * Reset password form data
+ */
+export interface ResetPasswordFormData {
+  password: string;
+  confirmPassword: string;
 }
 
 /**

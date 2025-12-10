@@ -1,6 +1,11 @@
 // Validation Utilities
 
-import { FormErrors, SignupFormData } from "@/lib/types/auth";
+import {
+  ForgotPasswordFormData,
+  FormErrors,
+  ResetPasswordFormData,
+  SignupFormData,
+} from "@/lib/types/auth";
 
 /**
  * Email validation regex
@@ -46,11 +51,6 @@ export function validateSignupForm(data: SignupFormData): FormErrors {
     errors.confirmPassword = "Passwords do not match";
   }
 
-  // User type validation
-  if (!data.userType) {
-    errors.userType = "Please select your account type";
-  }
-
   return errors;
 }
 
@@ -71,6 +71,46 @@ export function validateLoginForm(data: {
 
   if (!data.password) {
     errors.password = "Password is required";
+  }
+
+  return errors;
+}
+
+/**
+ * Validate forgot password form data
+ */
+export function validateForgotPasswordForm(
+  data: ForgotPasswordFormData
+): FormErrors {
+  const errors: FormErrors = {};
+
+  if (!data.email.trim()) {
+    errors.email = "Email is required";
+  } else if (!EMAIL_REGEX.test(data.email)) {
+    errors.email = "Please enter a valid email address";
+  }
+
+  return errors;
+}
+
+/**
+ * Validate reset password form data
+ */
+export function validateResetPasswordForm(
+  data: ResetPasswordFormData
+): FormErrors {
+  const errors: FormErrors = {};
+
+  if (!data.password) {
+    errors.password = "Password is required";
+  } else if (data.password.length < MIN_PASSWORD_LENGTH) {
+    errors.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
+  }
+
+  if (!data.confirmPassword) {
+    errors.confirmPassword = "Please confirm your password";
+  } else if (data.password !== data.confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
   }
 
   return errors;
