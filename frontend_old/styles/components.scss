@@ -1,0 +1,1673 @@
+/* PanchangamTable Component Styles */
+.panchangam-table {
+  .icon-sprite {
+    background-image: url('../assets/images/icons/panchangam_sprite.png');
+    background-repeat: no-repeat;
+    width: 56px;
+    height: 40px;
+    display: inline-block;
+  }
+
+  /* View More Button - Orange Theme with Animation */
+  .view-more-btn {
+    background-color: #ff6600 !important;
+    border-color: #ff6600 !important;
+    color: white !important;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      background-color: #e65c00 !important;
+      border-color: #e65c00 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 102, 0, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(255, 102, 0, 0.3);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+
+    &:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+  }
+
+  /* Enhanced Location Selector Animations */
+  .collapse-header {
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  /* Location Selection Styles */
+  .location-preview {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    margin: 12px 0;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .submit-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &.submitting {
+      transform: scale(0.98);
+    }
+
+    &.success-state {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+  }
+
+  .cancel-btn {
+    transition: all 0.2s ease;
+
+    &.disabled-state {
+      opacity: 0.5;
+      transform: scale(0.95);
+    }
+  }
+
+  /* Progress Bar Enhancements */
+  .progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    background: linear-gradient(45deg, $primary, #0056b3);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+
+    &.progress-bar-animated {
+      animation: progress-bar-stripes 1s linear infinite;
+    }
+  }
+}
+
+/* Keyframe Animations */
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(50, 50);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes progress-bar-stripes {
+  0% {
+    background-position: 1rem 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .panchangam-table {
+    .location-preview {
+      margin: 8px 0;
+    }
+
+    .submit-btn {
+      font-size: 12px;
+    }
+
+    .cancel-btn {
+      min-width: 32px;
+    }
+  }
+}
+
+/* Telugu Calendar Styles */
+.telugu-calendar-v2 {
+  /* Custom Font stack for clear Telugu rendering. Using Inter for UI, and Noto Sans Telugu as a strong fallback. */
+  .telugu-font {
+    font-family: 'Inter', 'Noto Sans Telugu', 'Gautami', sans-serif;
+    line-height: 1.4; /* Better spacing for stacked text */
+  }
+
+  /* Custom styles for the complex date cells */
+  .calendar-cell {
+    height: 100px; /* Fixed height for consistent look */
+    min-width: 100px; /* Minimum width for desktop */
+    border: 1px solid #ccc;
+    padding: 4px;
+    position: relative;
+  }
+
+  .inactive-day {
+    background-color: #ccc;
+    color: #666;
+    opacity: 0.4;
+  }
+
+  .active-day {
+    background-color: #ebdf94;
+  }
+
+  .date-number {
+    font-size: 2.5rem; /* 36px - large number */
+    line-height: 1;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* 3. Cell UI Format: Number top, then text vertically */
+  .date-detail {
+    font-size: 0.65rem; /* Very small text for details */
+    line-height: 1.5;
+    text-align: left;
+    /* Position below the date number, starting from the left edge */
+    top: 25px;
+    left: 4px;
+    color: #4b5563; /* Default text color */
+  }
+
+  /* Adjustments for the sidebars (Waram/Time Column) */
+  .sidebar-cell {
+    font-size: 1rem; /* 1. Increased font size for Waram names (ఆది, సోమ, etc.) */
+    line-height: 1.3;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-weight: 600; /* Make the Waram names stand out */
+  }
+
+  .week-day {
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* Red text for Headers/Sunday Names */
+  .red-text {
+    color: $primary;
+  }
+
+  /* 2. Sunday Dates Styling */
+  .holiday-sunday .date-number {
+    color: $primary; /* Red for the number */
+  }
+  .holiday-sunday .date-detail {
+    color: #1f2937; /* Keep detail text dark for readability */
+  }
+
+  /* 2. Important Festival Dates Styling */
+  .holiday-imp-festival .date-number {
+    color: $primary; /* Red for the number */
+  }
+
+  /* Responsive adjustments for mobile */
+  @media (max-width: 768px) {
+    .calendar-cell {
+      height: 80px;
+      min-width: unset;
+      padding: 2px;
+    }
+    .date-number {
+      font-size: 1.5rem;
+      margin-bottom: -0.4rem;
+    }
+    .date-detail {
+      font-size: 0.5rem;
+      top: 20px;
+    }
+    .sidebar-cell,
+    .top-header-text {
+      font-size: 0.65rem;
+    }
+    .sidebar-cell {
+      font-size: 0.85rem; /* Smaller increase on mobile */
+    }
+    .main-calendar-table {
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Custom table layout to combine sidebars and main grid */
+  .main-calendar-table {
+    border-collapse: collapse;
+    width: 100%;
+    /* 1 sidebar column + 5 date columns = 6 columns total */
+    table-layout: fixed;
+  }
+
+  /* Define widths: 1 narrow side column (Waram) and 5 equal main columns (Dates) */
+  .main-calendar-table td:nth-child(1) {
+    width: 10%;
+  } /* Wara/Day Info column - Increased width slightly */
+  /* 85% remaining space for 5 columns (85/5 = 17%) */
+  .main-calendar-table td:nth-child(n + 2) {
+    width: 10%;
+  }
+
+  /* Since there is no thead, we apply the top border style to the first row of tbody */
+  .main-calendar-table tbody tr:first-child .sidebar-cell {
+    border-top: 2px solid $primary; /* red-500 */
+  }
+  .main-calendar-table tbody tr:first-child .calendar-cell {
+    border-top: 2px solid $primary; /* red-500 */
+  }
+
+  .font-normal {
+    font-size: 0.6rem;
+  }
+}
+
+/* Monthly Calendar Component Additional Styles */
+.monthly-calendar {
+  /* Skeleton styles */
+  .bottom-helper-text {
+    font-size: 1rem;
+    font-style: italic;
+    color: #666;
+  }
+  .skeleton-text {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+    height: 16px;
+    display: inline-block;
+  }
+
+  .skeleton-text-sm {
+    height: 12px;
+  }
+
+  .skeleton-text-md {
+    height: 16px;
+  }
+
+  .skeleton-text-lg {
+    height: 20px;
+  }
+
+  /* Festival List Styles */
+  .festival-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .event-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .event-item:last-child {
+    border-bottom: none;
+  }
+
+  .event-date {
+    font-weight: bold;
+    color: $primary;
+  }
+
+  .event-name {
+    margin: 0 0.25rem;
+  }
+
+  .separator {
+    margin: 0 0.25rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .festival-list {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Tithi Icon Styles */
+.tithi-icon {
+  z-index: 1;
+
+  .tithi-icon-img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-left: 3px;
+    margin-top: 3px;
+  }
+}
+
+/* Header Navigation Nested Dropdown Styles */
+.dropdown-submenu {
+  position: relative;
+
+  .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+    margin-left: -1px;
+    border-radius: 0.25rem;
+  }
+
+  &:hover > .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+
+  .dropdown-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .fa-angle-right {
+      margin-left: auto;
+      font-size: 12px;
+    }
+  }
+}
+
+/* Ensure proper positioning for nested dropdowns */
+.gr-menu-dropdown {
+  .dropdown-submenu {
+    .dropdown-menu {
+      min-width: 200px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+/* Eclipse Detail Sidebar Styles */
+.eclipse-detail-sidebar {
+  .upcoming-eclipses {
+    .upcoming-item {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+
+      &:hover {
+        background-color: #f8f9fa !important;
+        border-color: #ff6600 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 100%;
+          background-color: #ff6600;
+          animation: slideIn 0.3s ease-out;
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .badge {
+        transition: all 0.2s ease;
+      }
+
+      &:hover .badge {
+        transform: scale(1.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
+/* Eclipse Card Hover Animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Festival Item Link Hover Animation */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.card-icon {
+  position: absolute;
+  right: 30px;
+}
+
+/* PDF Download Button Styles */
+.pdf-download-btn {
+  border-width: 2px !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background-color: transparent !important;
+  color: $primary !important;
+
+  &:hover:not(:disabled) {
+    background-color: $primary !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: $primary;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.festival-page {
+  .festival-header {
+    min-height: 270px;
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      min-height: auto;
+      margin: 1rem 0 !important;
+    }
+  }
+
+  .festival-background {
+    background: #b85709;
+    height: 318px;
+    border-radius: 2px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    position: absolute;
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      height: 100%;
+      min-height: 400px;
+    }
+  }
+
+  .date-card {
+    background-size: contain;
+    color: #fff;
+    background-color: #360923;
+    max-width: 345px;
+    min-height: 233px;
+    margin-left: 20px;
+    border-radius: 2px;
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      max-width: 100%;
+      margin-left: 10px;
+      margin-right: 10px;
+      min-height: 200px;
+    }
+
+    @media (max-width: 576px) {
+      margin-left: 5px;
+      margin-right: 5px;
+      border-width: 3px;
+      min-height: 180px;
+    }
+  }
+
+  .card-body {
+    padding-left: 0;
+    padding-right: 0;
+    border: 5px solid #ffebc6;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+  .image-card {
+    margin-right: 20px;
+    background-color: #350922;
+    border: 5px solid #ffebc6 !important;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0 !important;
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    @media (max-width: 576px) {
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+  }
+
+  .card-caption {
+    color: #f0f009;
+  }
+
+  .date-title {
+    font-size: 1.4rem;
+  }
+}
+.date-card-content {
+  .greg-date {
+    font-size: 3rem;
+    color: #f0f009;
+    span {
+      font-size: 1rem;
+    }
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      font-size: 2.5rem;
+    }
+
+    @media (max-width: 576px) {
+      font-size: 2rem;
+    }
+  }
+
+  .month {
+    font-size: 1.5rem;
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      font-size: 1.3rem;
+    }
+
+    @media (max-width: 576px) {
+      font-size: 1.1rem;
+    }
+  }
+
+  .week-day {
+    color: #f0f009 !important;
+    font-size: 1rem;
+    background-color: #660339;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    // Responsive adjustments for mobile
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    @media (max-width: 576px) {
+      font-size: 0.8rem;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+  }
+}
+
+.festival-time-box {
+  .card-body {
+    border: 1px solid $primary;
+    box-shadow: none;
+  }
+}
+
+.commet-username {
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.max-width-300 {
+  max-width: 300px;
+}
+
+.max-width-400 {
+  max-width: 400px;
+}
+
+.max-width-500 {
+  max-width: 500px;
+}
+
+.max-width-600 {
+  max-width: 600px;
+}
+
+#mobile-menu .my-account {
+  margin-left: 30px;
+}
+
+h6 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: $primary;
+}
+
+.mail {
+  font-size: 0.9rem;
+}
+
+/* Festivals Page Styles */
+.festivals-page {
+  .month-header {
+    color: #fe7102;
+    margin-bottom: 1rem;
+  }
+
+  .festival-card {
+    transition: all 0.3s ease;
+    padding: 0.7rem;
+    border-radius: 0.25rem;
+    border: 1px solid #fe7102;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(254, 113, 2, 0.1);
+    }
+  }
+
+  .festival-name {
+    color: $primary;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .festival-date {
+    color: #6c757d;
+  }
+
+  .tithi-info {
+    .tithi-name {
+      font-size: 0.9rem;
+      color: #495057;
+    }
+  }
+
+  // Ensure proper horizontal layout for festival cards
+  .festival-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    @media (min-width: 992px) {
+      // Large screens - 2 columns
+      .festival-card {
+        flex: 0 0 calc(50% - 0.5rem);
+      }
+    }
+
+    @media (max-width: 991px) {
+      // Medium and small screens - 1 column
+      .festival-card {
+        flex: 0 0 100%;
+      }
+    }
+  }
+}
+
+/* Festival Grid Layout Styles */
+.festival-grid-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.festival-main-content {
+  width: 100%;
+}
+
+.festival-sidebar {
+  width: 100%;
+}
+
+/* Festival Month Section Styles */
+.festival-month-section {
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .month-title {
+    background-color: #830f0f;
+    margin-bottom: 0;
+    padding: 0.5rem 0;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $white;
+  }
+
+  .festival-month-container {
+    border: 1px solid $gray-210;
+    background-color: white;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: #374151;
+      background-color: #1f2937;
+    }
+  }
+
+  .festival-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .festival-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $gray-210;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: #374151;
+    }
+
+    @media (min-width: 768px) {
+      &:nth-child(odd) {
+        border-right: 1px solid $gray-210;
+
+        @media (prefers-color-scheme: dark) {
+          border-color: #374151;
+        }
+      }
+    }
+
+    &:last-child {
+      @media (min-width: 768px) {
+        border-bottom: none;
+      }
+    }
+
+    &:nth-last-child(2) {
+      @media (min-width: 768px) {
+        border-bottom: none;
+      }
+    }
+
+    // Hover effect for festival items with links
+    &.festival-item-link {
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+
+      &:hover {
+        background-color: rgba($primary, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 100%;
+          background-color: $primary;
+          animation: slideInLeft 0.3s ease-out;
+        }
+
+        .festival-image {
+          transform: scale(1.05);
+          transition: transform 0.3s ease;
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .festival-image {
+    margin-right: 1rem;
+    height: 4.5rem;
+    width: 6.7rem;
+    object-fit: cover;
+  }
+
+  .festival-details {
+    flex: 1;
+    text-align: left;
+
+    .festival-name {
+      font-weight: bold;
+      transition: color 0.2s ease;
+
+      &.festival-name-link {
+        color: $primary;
+
+        @media (prefers-color-scheme: dark) {
+          color: $primary;
+        }
+      }
+
+      &.festival-name-no-link {
+        color: black;
+
+        @media (prefers-color-scheme: dark) {
+          color: white;
+        }
+      }
+    }
+
+    .festival-date {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+
+      @media (prefers-color-scheme: dark) {
+        color: #d1d5db;
+      }
+    }
+
+    .festival-tithi {
+      font-size: 0.75rem;
+      color: #6b7280;
+
+      @media (prefers-color-scheme: dark) {
+        color: #9ca3af;
+      }
+    }
+  }
+
+  .more-festivals-link {
+    display: block;
+    padding: 0.5rem;
+    text-align: right;
+    font-weight: 600;
+    color: $primary;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    border-top: 1px solid #e5e7eb;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: #374151;
+      color: $primary;
+    }
+
+    &:hover {
+      color: $secondary3;
+
+      @media (prefers-color-scheme: dark) {
+        color: $secondary3;
+      }
+    }
+
+    /* Pagination Styles */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .page-item {
+        margin: 0 0.5rem;
+
+        &.disabled {
+          opacity: 0.5;
+          pointer-events: none;
+        }
+
+        .page-link {
+          display: block;
+          padding: 0.5rem 1rem;
+          color: $primary;
+          text-decoration: none;
+          border-radius: 0.25rem;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: rgba($primary, 0.1);
+            color: white;
+          }
+
+          &.current {
+            background-color: $primary;
+            color: white;
+            font-weight: bold;
+            cursor: default;
+          }
+        }
+      }
+    }
+  }
+}
+
+.table-tith h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.festival-date {
+  font-size: 1rem !important;
+}
+.festival .event-name a,
+.festival-name a {
+  color: $gray-940;
+  text-decoration: underline !important;
+}
+.right-align {
+  text-align: right;
+}
+
+.comment-item .card-body {
+  flex: 1 1 auto;
+  padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x) !important;
+  color: var(--bs-card-color);
+  border: none;
+  box-shadow: none;
+}
+
+/* Social Share Buttons Container */
+.social-pdf-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* PDF Download Button Wrapper */
+.pdf-download-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+
+.rashi-grid-container {
+  max-width: 28rem;
+  margin: 0 auto;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.rashi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border: 2px solid #fe7102;
+}
+
+.grid-cell {
+  background: white;
+  padding: 0.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-cell.border-right {
+  border-right: 2px solid #fe7102;
+}
+
+.grid-cell.border-bottom {
+  border-bottom: 2px solid #fe7102 !important;
+}
+
+.grid-cell.border-left {
+  border-left: 2px solid #fe7102;
+}
+
+.grid-cell.border-top {
+  border-top: 2px solid #fe7102 !important;
+}
+
+.grid-cell.center-cell {
+  grid-column: 2 / 4;
+  grid-row: 2 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  text-align: center;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.swastika {
+  color: #d32f2f;
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.center-date {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 0.25rem;
+}
+
+.center-brand {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  opacity: 0.8;
+}
+
+.rashi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.planets-list {
+  display: flex;
+  gap: 0.125rem;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.planet-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.planet-row.multiple-planets {
+  padding: 0.125rem 0;
+}
+
+.planet-name {
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.planet-row.multiple-planets .planet-name {
+  font-size: 0.875rem;
+}
+
+.planet-name.sun {
+  color: #dc2626;
+}
+
+.planet-name.moon {
+  color: #eab308;
+}
+
+.planet-name.mars {
+  color: #b91c1c;
+}
+
+.planet-name.mercury {
+  color: #d97706;
+}
+
+.planet-name.jupiter {
+  color: #9333ea;
+}
+
+.planet-name.venus {
+  color: #16a34a;
+}
+
+.planet-name.saturn {
+  color: #475569;
+}
+
+.planet-name.rahu {
+  color: #000000;
+}
+
+.planet-name.ketu {
+  color: #be123c;
+}
+
+.debug-panel ul {
+  margin-top: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.sidebar-content h6 {
+  font-size: 14px;
+  color: #495057;
+}
+
+.sidebar-content ul li {
+  padding: 4px 0;
+  border-bottom: 1px solid #fe7102;
+}
+
+.sidebar-content ul li:last-child {
+  border-bottom: none;
+}
+
+/* SVG Container Styles */
+.dpEmbeddedContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.dpRatio3By2 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 66.67%; /* 2/3 = 66.67% for 3:2 ratio */
+}
+
+.dpRatio3By2 svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* SVG Element Styles */
+.cls_7a37a7 {
+  width: 400px;
+  height: 267px;
+}
+
+.cls_661125 {
+  fill: none;
+  stroke: #b80000;
+}
+
+.cls_661125:hover {
+  fill: #757370;
+  opacity: 0.1;
+  display: block;
+}
+
+.cls_f08764 {
+  pointer-events: none;
+}
+
+.cls_93c87d {
+  opacity: 0.2;
+}
+
+.cls_93c87d:hover {
+  cursor: pointer;
+  fill: #757370;
+  opacity: 0.1;
+  display: block;
+}
+
+.cls_d170f1 {
+  font-size: 10px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  opacity: 0.5;
+}
+
+.cls_da7d62:hover {
+  cursor: pointer;
+  opacity: 1;
+  display: block;
+  filter: brightness(1.2);
+}
+
+.cls_fbcfd4 {
+  opacity: 0.5;
+}
+
+.cls_0dfc91 {
+  opacity: 0.8;
+  font-size: 40px;
+  text-anchor: middle;
+  alignment-baseline: hanging;
+}
+
+.cls_3190f8 {
+  opacity: 0.75;
+}
+
+.cls_6cd244 {
+  opacity: 0.75;
+  font-size: 12px;
+  font-family: monospace;
+  stroke: none;
+  text-anchor: start;
+  alignment-baseline: baseline;
+}
+
+.cls_b8543a {
+  font-size: 13px;
+  font-family: monospace;
+  stroke: none;
+  text-anchor: start;
+  alignment-baseline: hanging;
+}
+
+.cls_14b64d {
+  opacity: 1;
+}
+
+.cls_4abf85 {
+  font-size: 15px;
+  font-family: monospace;
+  stroke: none;
+  font-weight: normal;
+  text-anchor: start;
+  alignment-baseline: hanging;
+}
+
+.cls_b80253 {
+  font-size: 12px;
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: hanging;
+}
+
+.cls_873c00 {
+  font-size: 14px;
+  font-weight: normal;
+  pointer-events: none;
+  font-family: 'Segoe UI', Tahoma, Verdana, Arial, sans-serif;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
+
+.cls_5d9e29 {
+  font-size: 12px;
+  pointer-events: none;
+  text-anchor: middle;
+  opacity: 0.8;
+}
+
+.cls_4abf85:hover {
+  cursor: pointer;
+}
+
+.cls_71d809 {
+  stroke: blue;
+  fill: none;
+  opacity: 0;
+  stroke-width: 1;
+  transition: opacity 0.3s;
+}
+
+.cls_74dbb1:hover .cls_71d809 {
+  opacity: 1;
+}
+
+.cls_120c33 {
+  font-size: 12px;
+  font-family: monospace;
+  stroke: none;
+  opacity: 0.5;
+  text-anchor: start;
+  alignment-baseline: hanging;
+}
+
+#id_147c7e,
+#id_147c7e-secondary {
+  pointer-events: all;
+}
+
+#id_0ff058 {
+  font-weight: bold;
+  margin: 20px auto 0;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+#id_0ff058.visible {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .rashi-grid-container {
+    max-width: 24rem;
+  }
+
+  .swastika {
+    font-size: 1.5rem;
+  }
+
+  .center-date {
+    font-size: 0.75rem;
+  }
+
+  .center-brand {
+    font-size: 0.625rem;
+  }
+
+  .planet-name {
+    font-size: 0.875rem;
+  }
+
+  .planet-row.multiple-planets .planet-name {
+    font-size: 0.75rem;
+  }
+}
+
+.day-calendar {
+  .week-day {
+    padding: 5px 0;
+    border-top: 1px solid $primary2 !important;
+    border-bottom: 1px solid $primary2 !important;
+    border-left: 1px solid $primary2 !important;
+    border-right: 1px solid $primary2 !important;
+    background-color: $primary2;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+  .border-primary {
+    border: 1px solid $primary !important;
+  }
+  .lable {
+    margin-right: 10px;
+    color: $primary2;
+  }
+  .value {
+    color: $secondary3;
+  }
+  .calendar-header {
+    p {
+      margin-bottom: 0;
+    }
+    h2 {
+      margin-bottom: 0;
+    }
+    .col-1 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .col-2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .col-3 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+  }
+  .calendar-icon {
+    background-image: url('../assets/images/icons/calendar-icon.png');
+    background-repeat: no-repeat;
+    width: 90px;
+    height: 90px;
+    display: inline-block;
+    background-size: contain;
+    background-position: center;
+    p {
+      font-weight: bold;
+      margin-bottom: 0;
+      color: #333;
+      font-size: 0.8rem;
+      &.lang {
+        color: $secondary3;
+      }
+      &.cal {
+        color: $primary;
+      }
+      &.year {
+        color: $secondary3;
+      }
+    }
+  }
+  .panchangam-top {
+    p {
+      margin-bottom: 0;
+    }
+    .col-1 {
+      border-right: 1px solid $primary2;
+    }
+
+    .col-2 {
+      border-right: 1px solid $primary2;
+      padding: 0;
+      .day-data {
+        border-top: 1px solid $primary2;
+        border-bottom: 1px solid $primary2;
+      }
+    }
+  }
+  .panchangam-bottom {
+    .panchanga-info {
+      padding: 0;
+    }
+    .col-1 {
+      border-right: 1px solid $primary2;
+    }
+
+    .col-2 {
+      border-right: 1px solid $primary2;
+      padding: 0;
+      .day-data {
+        border-top: 1px solid $primary2;
+        border-bottom: 1px solid $primary2;
+      }
+    }
+
+    p {
+      margin-bottom: 0;
+      border-bottom: 1px solid $primary2;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+      display: flex;
+      align-items: center;
+      font-size: 0.98rem;
+      &.ruthu-data,
+      &.moon-sign {
+        border: 0;
+      }
+    }
+  }
+  .muhurtha-info {
+    p {
+      font-size: 0.98rem;
+      .value {
+        font-size: 0.9rem;
+      }
+    }
+  }
+  .sunmoon-data {
+    padding-top: 5px;
+    padding-bottom: 3px;
+    p {
+      font-size: 1rem;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      .value {
+        font-size: 0.95rem;
+      }
+    }
+  }
+  .lunar-year {
+    font-size: 1.3rem;
+    padding-top: 10px;
+    color: $secondary2;
+    font-weight: bold;
+  }
+  .lunar-masa {
+    font-size: 1.2rem;
+    padding-top: 6px;
+    color: $secondary3;
+    font-weight: bold;
+  }
+  .border-primary2 {
+    border: 1px solid $primary2;
+  }
+
+  .border-secondary3 {
+    border: 1px solid $secondary3;
+  }
+  .panchangam-festivals {
+    p {
+      margin-bottom: 0;
+      color: $secondary3;
+    }
+    a {
+      color: $secondary3;
+      font-weight: bold;
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+  .rashi-table .planet-name {
+    font-size: 0.8rem !important;
+  }
+}
+
+// Date display styles
+.date-display {
+  font-size: 3rem;
+  .date-day {
+    color: $secondary3; // Red color for day
+    font-weight: bold;
+  }
+
+  .date-month {
+    color: $secondary3; // Teal color for month
+    font-weight: bold;
+  }
+
+  .date-year {
+    color: $secondary3; // Blue color for year
+    font-weight: bold;
+  }
+
+  .date-separator {
+    color: $secondary2; // Gray color for separators
+    margin: 0 2px;
+  }
+}
+
+/* Calendar Navigation Styles */
+.calendar-nav {
+  .nav-link-custom {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #e9ecef;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .nav-today-custom {
+    background-color: $primary;
+    color: white !important;
+    border: 1px solid $primary;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary, 10%);
+      border-color: darken($primary, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba($primary, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba($primary, 0.3);
+    }
+  }
+
+  // Responsive adjustments for mobile
+  @media (max-width: 768px) {
+    .nav-link-custom,
+    .nav-today-custom {
+      padding: 0.5rem 1rem !important;
+      font-size: 0.875rem;
+    }
+
+    .fa-angle-left,
+    .fa-angle-right {
+      font-size: 0.875rem;
+    }
+  }
+}
+.rashi-grid .grid-cell {
+  padding: 0 !important;
+}
+.planetary-positions li {
+  font-size: 0.9rem !important;
+}

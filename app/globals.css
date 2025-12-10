@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.material-icons-outlined {
+  font-size: inherit;
+}
+
+@layer utilities {
+  .btn-gradient {
+    @apply bg-gradient-to-r from-pbp-purple-1 to-pbp-purple-2 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+}

@@ -1,0 +1,48 @@
+export const ITEMS_PER_PAGE = 30;
+
+// Category IDs for different types of stotras
+export const CATEGORY_IDS = {
+  ASHTOTTARA_SHATANAMAVALI: '68ac2239bfcc70ec4468aa8c',
+  SAHASRANAMAVALI: '68ac2239bfcc70ec4468aa8f',
+  SAHASRANAMAM: '68dce4a832e525e497f29abc',
+  BHAJANS: '68df3c32583c526d7f6d46c9',
+  BHAKTHI_SONGS: '68df3ce9583c526d7f6d46d6',
+  STOTRAS: '68ac2239bfcc70ec4468aa77',
+};
+
+// Deva IDs for different deities
+export const DEVA_IDS = {
+  AYYAPPA: '68ac2239bfcc70ec4468aac5',
+  GANESHA: '68ac2239bfcc70ec4468aaa6',
+  DURGA: '68ac2239bfcc70ec4468aaa9',
+  SUBRAHMANYA: '68ac2239bfcc70ec4468aac1',
+  HANUMAN: '68ac2239bfcc70ec4468aac2',
+  NAVAGRAHA: '68f07205edd0bf41c744f9c8',
+  ANYADEVATHA: '68f09eb5edd0bf41c744f9d0',
+  LAKSHMI: '68ac2239bfcc70ec4468aaab',
+  LALITA: '68f0a168edd0bf41c744f9ea',
+  DASHAVATARA: '68ac2239bfcc70ec4468aabc',
+  DATTATREYA: '68ac2239bfcc70ec4468aac6',
+  KRISHNA: '68ac2239bfcc70ec4468aabb',
+  RAMA: '68ac2239bfcc70ec4468aaba',
+  VISHNU: '68ac2239bfcc70ec4468aab9',
+  SHIVA: '68ac2239bfcc70ec4468aac0',
+  VENKATESHWARA: '68ac2239bfcc70ec4468aabd',
+  PARVATI: '68ac2239bfcc70ec4468aaaa',
+  VARAHI: '68f0a038edd0bf41c744f9d8',
+  PRATHYANGIRA: '68e7be6d4f01231cbc5c1089',
+  SHYAMALA: '68f0a071edd0bf41c744f9e2',
+  SARASVATI: '68ac2239bfcc70ec4468aaac',
+  DASHAMAHAVIDYA: '68f0a1a1edd0bf41c744f9f0',
+  KAMAKSHI: '68f0a22dedd0bf41c744fa04',
+  GAYATRI: '68f0a259edd0bf41c744fa0a',
+  TULASI: '68f0a289edd0bf41c744fa10',
+  RADHA: '68f0a314edd0bf41c744fa22',
+  OTHER_DEVI_FORMS: '68f0a333edd0bf41c744fa28',
+  NADI: '68f0a384edd0bf41c744fa2e',
+  OTHERS: '68f4d9506ac297a1bdcfcdad',
+  OTHER_VISHNU: '68ac2239bfcc70ec4468aabc',
+  VARAHA: '68f4d5176ac297a1bdcfccd1',
+  NARASHIMHA: '68f4d5256ac297a1bdcfccd5',
+  SHIRDI_SAI: '68f5e94aa65920dcdbfea05e',
+};

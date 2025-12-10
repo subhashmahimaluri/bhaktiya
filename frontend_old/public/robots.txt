@@ -1,0 +1,25 @@
+User-agent: *
+# Allow all your main content
+Allow: /
+
+# Block crawl for specific query params (examples from your URLs)
+Disallow: /*?EJ7YGsM=
+Disallow: /*?XUXHsc=
+Disallow: /*?7u5fGCuCwdoUi=
+Disallow: /*?PDgRK=
+Disallow: /*?R038M2we=
+Disallow: /*?kEHObRTlhbzpAPW=
+Disallow: /*?wtuvhaQCcSWzI=
+
+# If you have many random query params, block all URLs with parameters (aggressive!)
+# Disallow: /*?
+
+# Allow important folders (customize for your actual site structure)
+Allow: /en/stotras/
+
+# Don't block resources needed for rendering (CSS, JS, images)
+Allow: /assets/
+Allow: /static/
+
+# Sitemap declaration (recommended!)
+Sitemap: https://www.ssbhakthi.com/sitemap.xml
