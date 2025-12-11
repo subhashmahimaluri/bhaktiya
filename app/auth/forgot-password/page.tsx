@@ -1,65 +1,44 @@
 "use client";
 
-import { AuthButton } from "@/components/auth/AuthButton";
-import { AuthCard } from "@/components/auth/AuthCard";
-import { AuthInput } from "@/components/auth/AuthInput";
-import { AUTH_ROUTES } from "@/lib/constants/authConfig";
 import { getSupabase } from "@/lib/supabaseClient";
-import { FormErrors } from "@/lib/types/auth";
-import { hasErrors, validateForgotPasswordForm } from "@/lib/utils/validation";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function ForgotPasswordPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const validationErrors = validateForgotPasswordForm({ email });
-    if (hasErrors(validationErrors)) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setIsLoading(true);
-    setServerError(null);
+    setLoading(true);
+    setError("");
 
     try {
       const supabase = getSupabase();
-
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}${AUTH_ROUTES.RESET_PASSWORD}`,
+        redirectTo: `${window.location.origin}/auth/reset-password`,
       });
 
       if (error) {
-        setServerError(error.message);
+        setError(error.message);
         return;
       }
 
-      setSuccessMessage(
-        "Password reset link sent! Please check your email inbox."
-      );
+      setSuccess(true);
     } catch {
-      setServerError("An unexpected error occurred. Please try again.");
+      setError("An error occurred");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  // Show success state
-  if (successMessage) {
+  if (success) {
     return (
-      <AuthCard
-        title="Check your email"
-        subtitle="We've sent you a password reset link"
-      >
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
               className="w-8 h-8 text-green-600"
               fill="none"
@@ -70,102 +49,83 @@ export default function ForgotPasswordPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                d="M5 13l4 4L19 7"
               />
             </svg>
           </div>
-          <p className="text-slate-600">{successMessage}</p>
-          <p className="text-sm text-slate-500">
-            Didn&apos;t receive the email? Check your spam folder or{" "}
-            <button
-              onClick={() => {
-                setSuccessMessage(null);
-                setEmail("");
-              }}
-              className="text-primary hover:text-primary/80 font-semibold transition-colors"
-            >
-              try again
-            </button>
+          <h1 className="text-2xl font-bold mb-4 text-gray-900">
+            Check your email!
+          </h1>
+          <p className="text-gray-600 mb-6">
+            We sent a password reset link to <strong>{email}</strong>
           </p>
           <Link
-            href={AUTH_ROUTES.LOGIN}
-            className="inline-block text-primary hover:text-primary/80 font-semibold transition-colors"
+            href="/auth/login"
+            className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
           >
             Back to Login
           </Link>
         </div>
-      </AuthCard>
+      </div>
     );
   }
 
   return (
-    <AuthCard
-      title="Forgot your password?"
-      subtitle="Enter your email and we'll send you a reset link"
-    >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {serverError && (
-          <div
-            className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm"
-            role="alert"
-            aria-live="polite"
-          >
-            {serverError}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Forgot Password?</h1>
+          <p className="text-gray-600 mt-2">
+            Enter your email and we&apos;ll send you a reset link
+          </p>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg mb-4">
+            {error}
           </div>
         )}
 
-        {/* Email */}
-        <AuthInput
-          label="Email Address"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (errors.email) {
-              setErrors((prev) => ({ ...prev, email: undefined }));
-            }
-            setServerError(null);
-          }}
-          error={errors.email}
-          autoComplete="email"
-          aria-required="true"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-          }
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
 
-        {/* Submit Button */}
-        <AuthButton type="submit" isLoading={isLoading}>
-          Send Reset Link
-        </AuthButton>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50"
+          >
+            {loading ? "Sending..." : "Send Reset Link"}
+          </button>
+        </form>
 
-      {/* Back to Login Link */}
-      <div className="mt-6 text-center">
-        <p className="text-sm text-slate-600">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Remember your password?{" "}
           <Link
-            href={AUTH_ROUTES.LOGIN}
-            className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            href="/auth/login"
+            className="text-primary font-medium hover:underline"
           >
-            Sign in
+            Login
+          </Link>
+        </p>
+
+        <p className="mt-2 text-center">
+          <Link href="/" className="text-gray-500 hover:text-primary text-sm">
+            ← Back to Home
           </Link>
         </p>
       </div>
-    </AuthCard>
+    </div>
   );
 }

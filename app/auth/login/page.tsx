@@ -1,187 +1,119 @@
 "use client";
 
-import { AuthButton } from "@/components/auth/AuthButton";
-import { AuthCard } from "@/components/auth/AuthCard";
-import { AuthInput } from "@/components/auth/AuthInput";
-import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
-import { AUTH_ROUTES } from "@/lib/constants/authConfig";
 import { getSupabase } from "@/lib/supabaseClient";
-import { FormErrors } from "@/lib/types/auth";
-import { hasErrors, validateLoginForm } from "@/lib/utils/validation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (field: "email" | "password", value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
-    setServerError(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const validationErrors = validateLoginForm(formData);
-    if (hasErrors(validationErrors)) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setIsLoading(true);
-    setServerError(null);
+    setLoading(true);
+    setError("");
 
     try {
       const supabase = getSupabase();
-
       const { error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
+        email,
+        password,
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          setServerError("Invalid email or password. Please try again.");
-        } else {
-          setServerError(error.message);
-        }
-        setIsLoading(false);
+        setError(error.message);
         return;
       }
 
-      router.push(AUTH_ROUTES.DASHBOARD);
+      router.push("/dashboard");
       router.refresh();
     } catch {
-      setServerError("An unexpected error occurred. Please try again.");
-      setIsLoading(false);
+      setError("An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <AuthCard title="Welcome back" subtitle="Sign in to continue your journey">
-      {/* Google OAuth Button */}
-      <div className="mb-6">
-        <GoogleAuthButton />
-      </div>
-
-      {/* Divider */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+          <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-3 bg-white text-slate-500">
-            or continue with email
-          </span>
-        </div>
-      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {serverError && (
-          <div
-            className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm"
-            role="alert"
-            aria-live="polite"
-          >
-            {serverError}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg mb-4">
+            {error}
           </div>
         )}
 
-        {/* Email */}
-        <AuthInput
-          label="Email Address"
-          type="email"
-          placeholder="you@example.com"
-          value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-          error={errors.email}
-          autoComplete="email"
-          aria-required="true"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-          }
-        />
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
 
-        {/* Password */}
-        <AuthInput
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={formData.password}
-          onChange={(e) => handleChange("password", e.target.value)}
-          error={errors.password}
-          autoComplete="current-password"
-          aria-required="true"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-          }
-        />
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              placeholder="••••••••"
+              required
+            />
+          </div>
 
-        {/* Forgot Password Link */}
-        <div className="flex justify-end">
-          <Link
-            href={AUTH_ROUTES.FORGOT_PASSWORD}
-            className="text-sm text-primary hover:text-primary/80 transition-colors"
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50"
           >
-            Forgot password?
-          </Link>
-        </div>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
 
-        {/* Submit Button */}
-        <AuthButton type="submit" isLoading={isLoading}>
-          Sign In
-        </AuthButton>
-      </form>
-
-      {/* Signup Link */}
-      <div className="mt-6 text-center">
-        <p className="text-sm text-slate-600">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
           <Link
-            href={AUTH_ROUTES.SIGNUP}
-            className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            href="/auth/signup"
+            className="text-primary font-medium hover:underline"
           >
-            Create one
+            Sign up
+          </Link>
+        </p>
+
+        <p className="mt-2 text-center">
+          <Link href="/" className="text-gray-500 hover:text-primary text-sm">
+            ← Back to Home
           </Link>
         </p>
       </div>
-    </AuthCard>
+    </div>
   );
 }
